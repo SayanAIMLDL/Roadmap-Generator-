@@ -147,13 +147,13 @@ OUTPUT FORMAT (STRICT JSON):
 
 ---
 
-📥 INPUT DATA:
+INPUT DATA:
 LEARNER'S BACKGROUND: <user_context>{context}</user_context>
 LEARNING GOAL: <user_query>{query}</user_query>
 
 ---
 
-🚀 EXECUTION INSTRUCTIONS:
+EXECUTION INSTRUCTIONS:
 
 1. **ANALYZE**: Understand the domain completely - what does a MASTER know?
 2. **STRUCTURE**: Organize into logical progression (Foundation → Intermediate → Advanced → Expert)
@@ -161,9 +161,9 @@ LEARNING GOAL: <user_query>{query}</user_query>
 4. **VALIDATE**: Does this roadmap cover 100% of what's needed? If not, add more!
 5. **OUTPUT**: Return ONLY valid JSON - no comments, no explanations
 
-💡 REMEMBER: You're creating the DEFINITIVE roadmap. Students should NEVER need to search elsewhere. Make it COMPLETE, COMPREHENSIVE, and CRYSTAL CLEAR!
+REMEMBER: You're creating the DEFINITIVE roadmap. Students should NEVER need to search elsewhere. Make it COMPLETE, COMPREHENSIVE, and CRYSTAL CLEAR!
 
-🎯 GENERATE ROADMAP NOW:""",
+GENERATE ROADMAP NOW:""",
                 input_variables=["query", "context"]
             )
             

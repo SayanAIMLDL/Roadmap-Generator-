@@ -12,6 +12,3 @@ beautifulsoup4
 requests
 sentence-transformers
 tenacity
-fastapi
-uvicorn[standard]
-pydantic
