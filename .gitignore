@@ -1,0 +1,147 @@
+# 🔐 SECURITY - Never commit these files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# 🔑 API Keys and Secrets
+*.pem
+*.key
+*.crt
+api_keys.txt
+secrets.txt
+credentials.json
+service-account.json
+
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 🌍 Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+conda-meta/
+.conda/
+
+# 💻 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.Thumbs.db
+
+# 📊 Logs and Data
+logs/
+*.log
+interactions.csv
+*.csv.bak
+roadmap_data/
+faiss_index_hf/
+.cache/
+*.cache
+
+# 🗂️ Temporary Files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+.nojekyll
+
+# 📓 Jupyter
+.ipynb_checkpoints
+
+# 🐍 Pyenv
+.python-version
+
+# 📦 Package Files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 🔧 OS Generated
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 🚀 Streamlit
+.streamlit/
+
+# 🧪 Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# 📚 Documentation
+docs/_build/
+site/
+
+# 🔍 Profiling
+*.prof
+*.lprof
+.pyprof
+
+# 🏷️ Tags
+tags
+TAGS
+
+# 📊 Database
+*.db
+*.sqlite
+*.sqlite3
+
+# 🔍 Backup Files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+# 🌐 Network
+.network
+.proxy
+
+# 🔐 Security Scans
+security-scan*
+vulnerability-report*
+audit-log*
+
+# 📈 Monitoring
+metrics/
+monitoring/
+.grafana/
+.prometheus/

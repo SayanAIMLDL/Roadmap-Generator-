@@ -1,0 +1,313 @@
+📝 CONTENT_GENERATOR.PY - CONTENT CURATION ENGINE
+=============================================
+
+📚 LIBRARIES/MODULES USED:
+---------------------------
+• json - JSON parsing and serialization
+• os - File system operations and path handling
+• hashlib - MD5 hashing for caching keys
+• threading - Thread synchronization and locking
+• typing - Type hints (Dict, List, Optional)
+• concurrent.futures - Parallel processing with ThreadPoolExecutor
+• langchain_groq.ChatGroq - LLM integration for content generation
+• langchain_core.prompts.PromptTemplate - LLM prompt management
+• tenacity - Retry logic with exponential backoff
+• groq - Groq API exception handling
+• config module - Secure configuration management
+• logger_config module - Structured logging
+• security module - Input validation and sanitization
+• api_client module - Optimized HTTP client and specialized API clients
+
+🏗️ ARCHITECTURE & PURPOSE:
+----------------------------
+Generates comprehensive educational content using:
+• LLM-powered content generation with validation
+• Multi-source API integration (Wikipedia, Medium, StackOverflow)
+• Intelligent caching system with MD5-based keys
+• Parallel processing for performance optimization
+• Comprehensive security and input validation
+• Robust error handling with fallback mechanisms
+
+⚙️ METHODS/FUNCTIONS:
+---------------------
+
+1. __init__(llm: ChatGroq, data_dir: str = None):
+   • Purpose: Initialize content generator with dependencies
+   • Parameters: llm (ChatGroq), data_dir (str, optional)
+   • Returns: ContentGenerator instance
+   • Work:
+     - Sets up LLM instance for content generation
+     - Configures data directory for caching
+     - Creates cache directory structure
+     - Initializes optimized API clients (Wikipedia, StackOverflow, Medium)
+     - Sets up thread synchronization
+     - Logs initialization with configuration details
+   • Security: Path validation and secure directory creation
+   • Performance: Pre-creates API clients and cache structure
+
+2. generate_topic_content(topic_name: str, context: str = ""):
+   • Purpose: Generate comprehensive content for a specific topic
+   • Parameters: topic_name (str), context (str)
+   • Returns: Dict with content, links, and metadata
+   • Work:
+     - Validates and sanitizes all inputs
+     - Checks cache for existing content
+     - Creates detailed prompt for LLM generation
+     - Implements retry logic with exponential backoff
+     - Validates and enhances generated content
+     - Generates verified links from multiple sources
+     - Caches results for future requests
+     - Comprehensive error handling with fallback
+   • Security: Input validation and URL security checks
+   • Performance: Intelligent caching and parallel processing
+
+3. generate_verified_links(search_query: str, context: str = ""):
+   • Purpose: Generate verified learning links from multiple sources
+   • Parameters: search_query (str), context (str)
+   • Returns: List[Dict] with link information
+   • Work:
+     - Validates and sanitizes search parameters
+     - Classifies topic type (concept/tool/framework)
+     - Fetches Medium articles via optimized API client
+     - Retrieves StackOverflow questions for technical topics
+     - Searches Wikipedia for foundational content
+     - Validates all URLs and removes duplicates
+     - Implements smart link addition with security checks
+     - Returns up to 5 high-quality, verified links
+   • Security: URL validation and domain checking
+   • Performance: Parallel API calls and intelligent caching
+
+4. _classify_topic(topic: str, context: str):
+   • Purpose: Classify topic type for optimized search strategy
+   • Parameters: topic (str), context (str)
+   • Returns: Dict with classification metadata
+   • Work:
+     - Validates inputs using SecurityValidator
+     - Creates classification prompt for LLM
+     - Invokes LLM with optimized token usage (100 tokens)
+     - Parses JSON response with error handling
+     - Returns classification (type, domain, official_docs)
+     - Logs classification results for debugging
+   • Performance: Minimal token usage for fast classification
+   • Security: Input validation and safe defaults
+
+5. _smart_add_link(links: List[Dict], link: Dict):
+   • Purpose: Safely add link to collection with validation
+   • Parameters: links (List[Dict]), link (Dict)
+   • Returns: None (modifies list in-place)
+   • Work:
+     - Validates link structure and required fields
+     - Checks for duplicate URLs to prevent redundancy
+     - Validates URL security and format
+     - Adds link if all validations pass
+     - Logs successful additions and rejections
+   • Security: URL validation and duplicate prevention
+   • Performance: Efficient duplicate checking algorithm
+
+6. _domain_from_url(url: str):
+   • Purpose: Extract domain name from URL for display
+   • Parameters: url (str)
+   • Returns: str (domain name)
+   • Work:
+     - Parses URL using urllib.parse
+     - Removes 'www.' prefix for clean display
+     - Returns 'External Resource' on parsing errors
+     - Handles edge cases and malformed URLs
+   • Security: Safe URL parsing with error handling
+   • User Experience: Clean, readable domain names
+
+7. _extract_json(text: str):
+   • Purpose: Extract JSON from LLM response text
+   • Parameters: text (str)
+   • Returns: Dict or None
+   • Work:
+     - Validates input type and finds JSON boundaries
+     - Extracts JSON object from response text
+     - Handles malformed JSON gracefully
+     - Returns None on extraction failures
+     - Logs parsing attempts for debugging
+   • Error Handling: Robust boundary detection
+   • Performance: Efficient string operations
+
+8. _validate_content(topic: str, content: Dict, context: str):
+   • Purpose: Validate and fix generated content using LLM
+   • Parameters: topic (str), content (Dict), context (str)
+   • Returns: Dict (validated content)
+   • Work:
+     - Validates all inputs using SecurityValidator
+     - Creates validation prompt for LLM
+     - Invokes LLM to fix content errors
+     - Parses JSON response with error handling
+     - Validates structure before returning
+     - Returns fixed content or original on failure
+   • Security: Input validation and structure checking
+   • Quality: Ensures content meets standards
+
+9. _fallback_content(topic: str):
+   • Purpose: Generate safe fallback content when LLM fails
+   • Parameters: topic (str)
+   • Returns: Dict with basic content structure
+   • Work:
+     - Validates topic using SecurityValidator
+     - Creates minimal but complete content structure
+     - Provides safe description and key points
+     - Includes placeholder for code snippet
+     - Returns empty links and next steps
+     - Handles validation errors gracefully
+   • Security: Input validation before processing
+   • Reliability: Always returns valid structure
+
+10. _save_to_cache(key: str, content: Dict):
+    • Purpose: Save content to cache with validation
+    • Parameters: key (str), content (Dict)
+    • Returns: None
+    • Work:
+      - Validates content structure before caching
+      - Generates MD5 hash for cache filename
+      - Saves content as JSON with proper encoding
+      - Implements atomic file operations
+      - Logs cache operations for monitoring
+    • Security: Content validation and safe file operations
+    • Performance: Efficient caching with hash-based keys
+
+11. _load_from_cache(key: str):
+    • Purpose: Load content from cache with validation
+    • Parameters: key (str)
+    • Returns: Dict or None
+    • Work:
+      - Generates MD5 hash for cache filename
+      - Checks file existence and permissions
+      - Loads JSON with proper encoding
+      - Validates cached content structure
+      - Returns None on validation failures
+      - Logs cache hits and misses
+    • Security: Path validation and structure validation
+    • Performance: Fast cache lookup with validation
+
+🔧 SPECIFIC WORK PERFORMED:
+---------------------------
+• Content Generation:
+  - Complex prompt engineering for educational content
+  - LLM integration with retry logic and backoff
+  - Content validation and quality enhancement
+  - Fallback content generation for reliability
+  - Comprehensive metadata enrichment
+
+• Multi-Source Integration:
+  - Wikipedia API integration for foundational knowledge
+  - Medium API integration for recent articles
+  - StackOverflow integration for code examples
+  - URL validation and security checking
+  - Intelligent source selection based on topic classification
+
+• Caching System:
+  - MD5-based content caching for performance
+  - Thread-safe operations with locking mechanism
+  - Cache validation and integrity checking
+  - Efficient cache hit/miss tracking
+  - Atomic file operations for data consistency
+
+• Security Implementation:
+  - Input validation through SecurityValidator
+  - URL validation and domain checking
+  - Content sanitization and validation
+  - Secure file operations with path validation
+  - Comprehensive logging without sensitive data
+
+📊 PERFORMANCE OPTIMIZATIONS:
+-------------------------------
+• Parallel Processing:
+  - Concurrent API calls using ThreadPoolExecutor
+  - Optimized request batching
+  - Intelligent resource pooling
+  - Thread synchronization for cache safety
+
+• Intelligent Caching:
+  - MD5-based cache keys for efficient lookup
+  - Content validation before caching
+  - Cache hit rate optimization
+  - Memory-efficient storage format
+
+• API Optimization:
+  - Connection pooling and reuse
+  - Rate limiting with backoff
+  - Request timeout management
+  - Retry logic with exponential backoff
+  - Specialized clients for different APIs
+
+🔐 SECURITY FEATURES:
+--------------------
+• Input Validation:
+  - Topic validation through SecurityValidator
+  - Context validation and sanitization
+  - Length limits and pattern filtering
+  - JSON structure validation
+
+• URL Security:
+  - URL format validation
+  - Domain checking and sanitization
+  - Malicious URL detection
+  - Safe link display and handling
+
+• Data Protection:
+  - Content validation before caching
+  - Secure file operations with proper permissions
+  - Thread-safe cache operations
+  - Comprehensive error logging
+
+🎯 INTEGRATION POINTS:
+-----------------------
+• config.py: Configuration and API settings
+• security.py: Input validation and sanitization
+• logger_config.py: Structured logging system
+• api_client.py: Optimized HTTP and specialized clients
+• WikipediaClient: Knowledge base integration
+• StackOverflowClient: Code examples and solutions
+• MediumClient: Recent articles and tutorials
+• roadmap_data/content_cache/: Persistent content storage
+
+🔄 WORKFLOW:
+-----------
+1. Topic Request → Input Validation → Cache Check
+2. Cache Miss → LLM Generation → Content Validation
+3. Link Generation → Multi-Source API Integration → URL Validation
+4. Content Assembly → Structure Validation → Cache Storage
+5. Cache Hit → Content Validation → Direct Return
+6. Error Handling → Fallback Generation → Safe Defaults
+
+📈 TECHNICAL SPECIFICATIONS:
+---------------------------
+• LLM Model: Configurable via config module
+• Temperature: 0.3 for consistent educational content
+• Max Tokens: 800 for comprehensive content generation
+• Retry Strategy: Exponential backoff with jitter
+• Cache Format: JSON with UTF-8 encoding
+• Thread Safety: Threading.Lock for cache operations
+• Rate Limiting: Token bucket algorithm (30 req/min)
+
+🎨 USER EXPERIENCE:
+------------------
+• Fast Content Generation: Sub-second response times
+• Rich Educational Content: Descriptions, examples, code snippets
+• Verified Learning Resources: High-quality, curated links
+• Intelligent Caching: Avoids regeneration for same topics
+• Robust Error Handling: Always provides useful content
+
+🚀 SCALABILITY FEATURES:
+-----------------------
+• Parallel API Calls: Concurrent content generation
+• Efficient Caching: Multi-layer caching strategy
+• Modular Design: Easy to extend with new sources
+• Performance Monitoring: Built-in timing and logging
+• Resource Management: Optimized memory and CPU usage
+• Thread Safety: Safe concurrent operations
+
+🎯 KEY ACHIEVEMENTS:
+---------------------
+• Enterprise Security: Comprehensive input and URL validation
+• High Performance: Parallel processing and intelligent caching
+• Rich Content: Multi-source integration with verification
+• Robust Architecture: Multiple fallback strategies
+• Production Ready: Comprehensive error handling and logging
+• User Experience: Fast, reliable, and educational content
+• Maintainable Code: Clean, documented, and modular structure
